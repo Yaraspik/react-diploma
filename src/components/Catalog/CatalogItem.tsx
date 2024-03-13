@@ -7,7 +7,7 @@ import { cartItemType } from "../Cart/interfaces.ts";
 import { catalogItemDetailType, sizesType } from "./interfaces.ts";
 
 const CatalogItem = () => {
-  const item: catalogItemDetailType = useAppSelector(_item);
+  const item: catalogItemDetailType | null = useAppSelector(_item);
   const loadingCatalog = useAppSelector(_status);
   const dispatch = useAppDispatch();
   const [amount, setAmount] = useState(1);
@@ -61,6 +61,7 @@ const CatalogItem = () => {
   const handleAddBasket = () => {
     if (!selected.size) return;
 
+    if (item === null) return;
     const product: cartItemType = {
       title: item.title,
       size: +selected.size,

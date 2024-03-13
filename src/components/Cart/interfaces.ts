@@ -7,3 +7,8 @@ export type cartItemType = {
     title: string,
 }
 
+export type order = {
+    id: number,
+    price: number,
+    count: number,
+}

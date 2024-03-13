@@ -1,3 +1,5 @@
+import { order } from "../components/Cart/interfaces";
+
 const url = "https://qh8y4d-7070.csb.app/api";
 
 export const getHits = async () => {
@@ -38,7 +40,7 @@ export const getItemInfo = async (id: string) => {
   const res = await fetch(`${url}/items/${id}`);
   return res.json().catch((e) => e.message);
 };
-export const sendOrder = async (order: {}) => {
+export const sendOrder = async (order: order) => {
   try {
     const res = await fetch(`${url}/order`, {
       method: "POST",
