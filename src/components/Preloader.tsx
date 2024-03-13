@@ -1,12 +1,3 @@
-const Preloader = () => {
-    return (
-        <div className="preloader">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    );
-}
+const Preloader = () => <div className="preloader"></div>;
 
 export default Preloader;

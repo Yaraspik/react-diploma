@@ -25,3 +25,8 @@ export type sizesType = {
     available: boolean,
     size: string,
 }
+
+export type category = {
+    id: number,
+    title: string,
+}

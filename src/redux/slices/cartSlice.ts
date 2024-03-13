@@ -1,28 +1,26 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {RootState} from "../store.ts";
-import {cartItemType} from "../../components/Cart/interfaces.ts";
+import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store.ts";
+import { cartItemType } from "../../components/Cart/interfaces.ts";
 
 type initialStateType = {
-    list: Array<cartItemType>,
-}
+  list: Array<cartItemType>;
+};
 
 const initialState: initialStateType = {
-    list: [],
+  list: [],
 };
 
 export const cartSlice = createSlice({
-    name: "cart",
-    initialState,
-    reducers: {
-        cartAdd: (state, {payload}) => {
-            if(Array.isArray(payload) && payload.length !== 0) {
-                state.list = payload;
-            }
-        },
-        cartReset: () => initialState,
+  name: "cart",
+  initialState,
+  reducers: {
+    cartAdd: (state, { payload }) => {
+      state.list = payload;
     },
+    cartReset: () => initialState,
+  },
 });
 
 export const _cart = (state: RootState) => state.cart.list;
-export const {cartAdd, cartReset} = cartSlice.actions;
+export const { cartAdd, cartReset } = cartSlice.actions;
 export default cartSlice.reducer;

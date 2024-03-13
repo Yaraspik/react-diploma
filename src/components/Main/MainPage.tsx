@@ -1,16 +1,13 @@
 import Hits from "../Hits/Hits.tsx";
-import CatalogList from "../Catalog/CatalogList.tsx";
+import Catalog from "../Catalog/Catalog.tsx";
 
 const MainPage = () => {
-    return (
-        <>
-            <Hits/>
-            <section className="catalog">
-                <h2 className="text-center">Каталог</h2>
-                <CatalogList/>
-            </section>
-        </>
-    );
-}
+  return (
+    <>
+      <Hits />
+      <Catalog disabledSearch={true} />
+    </>
+  );
+};
 
 export default MainPage;
