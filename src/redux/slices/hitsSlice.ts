@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store.ts";
-import { itemType } from "../../components/Hits/interfaces.ts";
+import {catalogItemType} from "../../components/Catalog/interfaces.ts";
 
 type initialStateType = {
-  items: Array<itemType>;
+  items: Array<catalogItemType>;
   status: "idle" | "pending" | "success" | "error";
   error: string;
 };

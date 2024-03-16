@@ -15,7 +15,7 @@ const Card = ({item}: {item: catalogItemType}) => {
                     </div>
                     <div className="card-body">
                         <p className="card-text">{item.title}</p>
-                        <p className="card-text">{item.price}</p>
+                        <p className="card-text">{item.price}₽</p>
                         <NavLink
                             to={`/catalog/${item.id}`}
                             className="btn btn-outline-primary"

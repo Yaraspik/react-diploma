@@ -1,6 +1,6 @@
 import { order } from "../components/Cart/interfaces";
 
-const url = "https://qh8y4d-7070.csb.app/api";
+const url = "http://localhost:7070/api";
 
 export const getHits = async () => {
   const res = await fetch(`${url}/top-sales`);

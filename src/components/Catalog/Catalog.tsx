@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
-import { useLoaderData, Form, useNavigation, Link } from "react-router-dom";
+import {useLoaderData, useNavigation} from "react-router-dom";
 import Card from "../Card";
-import Preloader from "../Preloader";
+import Preloader from "./Preloader.tsx";
 import { getItems, getMoreItems, getCategories } from "../../api/fetchApi";
 import { catalogItemType, category } from "./interfaces";
-
+import RebootButton from "./RebootButton.tsx";
+import Search from "./Search.tsx";
+import CategoryItem from "./CategoryItem.tsx";
 const Catalog = ({ disabledSearch = false }) => {
-  const { paramsQ } = useLoaderData() as { paramsQ: string };
+  const { paramsQ, paramsCategory } = useLoaderData() as { paramsQ: string, paramsCategory: number };
   const [q, setQ] = useState(paramsQ);
   const [items, setItems] = useState<catalogItemType[] | []>([]);
   const [categories, setCategories] = useState<category[]>([]);
-  const [activatedCategory, setActivatedCategory] = useState(0);
+  const [activatedCategory, setActivatedCategory] = useState(paramsCategory);
   const [offset, setOffset] = useState(0);
   const [next, setNext] = useState(true);
   const [status, setStatus] = useState("idle");
+  const [categoryError, setCategoryError] = useState("");
   const [mainError, setMainError] = useState("");
   const [getMoreError, setGetMoreError] = useState("");
   const navigation = useNavigation();
-
   const getItemsApi = async () => {
     setMainError("");
     setItems([]);
@@ -41,7 +43,23 @@ const Catalog = ({ disabledSearch = false }) => {
       }
     }
   };
-
+  const getCategoriesApi = async () => {
+    setCategoryError("");
+    setQ(paramsQ);
+    setStatus("pending");
+    try {
+      const categories = await getCategories();
+      if (Array.isArray(categories)) {
+        setCategories([{ id: 0, title: "Все" }, ...categories]);
+      }
+      setStatus("success");
+    } catch (e: unknown) {
+      setStatus("error");
+      if (e instanceof Error) {
+        setCategoryError(e.message);
+      }
+    }
+  }
   useEffect(() => {
     (async () => {
       try {
@@ -59,12 +77,11 @@ const Catalog = ({ disabledSearch = false }) => {
       }
     })();
   }, []);
-
   useEffect(() => {
     setMainError("");
     getItemsApi();
+    getCategoriesApi();
   }, [paramsQ, activatedCategory]);
-
   const handleGetMore = () => {
     (async () => {
       setGetMoreError("");
@@ -88,62 +105,24 @@ const Catalog = ({ disabledSearch = false }) => {
     <>
       <section className="catalog">
         <h2 className="text-center">Каталог</h2>
-        {status === "error" && mainError !== "" ? (
-          <div className="text-center">
-            <p>Что-то пошло не так: {mainError}</p>
-            <button className="btn btn-outline-primary" onClick={getItemsApi}>
-              Попробовать ещё
-            </button>
-          </div>
-        ) : (
+        {status === "error" && mainError !== "" ? <RebootButton message={mainError} callback={getItemsApi}/> : (
           <>
-            {!disabledSearch && (
-              <Form className="catalog-search-form form-inline">
-                <input
-                  className="form-control"
-                  name="q"
-                  value={q}
-                  onChange={({
-                    target: { value },
-                  }: {
-                    target: { value: string };
-                  }) => setQ(value)}
-                  placeholder="Поиск"
-                />
-              </Form>
-            )}
+            {!disabledSearch && <Search q={q} setQ={setQ}/>}
             <ul className="catalog-categories nav justify-content-center">
-              {categories.map((category: category) => {
-                return (
-                  <li className="nav-item" key={category.id}>
-                    <Link
-                      className={
-                        activatedCategory == category.id
-                          ? "nav-link active"
-                          : "nav-link"
-                      }
-                      to="#"
-                      onClick={() => setActivatedCategory(category.id)}
-                    >
-                      {category.title}
-                    </Link>
-                  </li>
-                );
-              })}
+              {categoryError ? <RebootButton message={categoryError} callback={getCategoriesApi}/> :
+              categories.map((category: category) => <CategoryItem category={category} activatedCategory={activatedCategory} setActivatedCategory={setActivatedCategory} q={q} key={category.id}/>)}
             </ul>
             <div className="row">
-              {items.length == 0 && status == "pending" && <Preloader />}
+              {items.length == 0 && status == "pending" && <Preloader/>}
               {items.map((item: catalogItemType) => (
-                <Card item={item} key={item.id} />
+                  <Card item={item} key={item.id}/>
               ))}
             </div>
-            {status == "pending" ? (
-              <Preloader />
-            ) : (
-              next && (
-                <div className="text-center">
-                  {getMoreError !== "" ? (
-                    <p>Что-то пошло не так: {getMoreError}</p>
+            {status == "pending" ? <Preloader/> : (
+                next && (
+                    <div className="text-center">
+                      {getMoreError !== "" ? (
+                          <p>Что-то пошло не так: {getMoreError}</p>
                   ) : (
                     <></>
                   )}
@@ -163,5 +142,4 @@ const Catalog = ({ disabledSearch = false }) => {
     </>
   );
 };
-
 export default Catalog;

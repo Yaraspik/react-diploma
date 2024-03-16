@@ -1,10 +1,9 @@
 import Preloader from "./Preloader.tsx";
-import HitsItem from "./HitsItem.tsx";
 import { useAppDispatch, useAppSelector } from "../../redux/store.ts";
 import { useEffect } from "react";
 import { hits, hitsRequest } from "../../redux/slices/hitsSlice.ts";
-import { itemType } from "./interfaces.ts";
-
+import Card from "../Card.tsx";
+import {catalogItemType} from "../Catalog/interfaces.ts";
 const Hits = () => {
   const { status, items, error } = useAppSelector(hits);
   const dispatch = useAppDispatch();
@@ -31,8 +30,8 @@ const Hits = () => {
         <Preloader />
       ) : (
         <div className="row">
-          {items.map((item: itemType) => (
-            <HitsItem item={item} key={item.id} />
+          {items.map((item: catalogItemType) => (
+            <Card item={item} key={item.id} />
           ))}
         </div>
       )}
